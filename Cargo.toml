@@ -1,0 +1,23 @@
+[package]
+name = "predator-ng"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+eframe = "0.22.0"
+egui = "0.22.0"
+
+[dependencies.confy]
+version = "0.5.1"
+features = ["ron_conf"]
+default_features = false
+
+[dependencies.serde]
+version = "1.0.188"
+features = ["derive"]
+
+[dependencies.egui_extras]
+version = "0.22.0"
+features = ["svg"]
