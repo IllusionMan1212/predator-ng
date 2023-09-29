@@ -259,13 +259,37 @@ fn show_dynamic_kb_lighting_pane(ui: &mut egui::Ui, dynamic_dev: &mut File, cfg:
             let _ = confy::store_path(config_path.clone(), &cfg);
         }
     });
+    ui.vertical(|ui| {
+        ui.label("Custom Color");
+        if ui.color_edit_button_srgb(&mut cfg.kb.color).changed() {
+            update_dynamic(dynamic_dev, *cfg);
+            let _ = confy::store_path(config_path.clone(), &cfg);
+        }
+        ui.horizontal(|ui| {
+            let r = ui.label("R");
+            if ui.add(egui::DragValue::new(&mut cfg.kb.color[0])).labelled_by(r.id).changed() {
+                update_dynamic(dynamic_dev, *cfg);
+                let _ = confy::store_path(config_path.clone(), &cfg);
+            }
+            let g = ui.label("G");
+            if ui.add(egui::DragValue::new(&mut cfg.kb.color[1])).labelled_by(g.id).changed() {
+                update_dynamic(dynamic_dev, *cfg);
+                let _ = confy::store_path(config_path.clone(), &cfg);
+            }
+            let b = ui.label("B");
+            if ui.add(egui::DragValue::new(&mut cfg.kb.color[2])).labelled_by(b.id).changed() {
+                update_dynamic(dynamic_dev, *cfg);
+                let _ = confy::store_path(config_path.clone(), &cfg);
+            }
+        });
+    });
 }
 
 fn show_static_kb_lighting_pane(ui: &mut egui::Ui, static_dev: &mut File, cfg: &mut Config, config_path: PathBuf, prohibit_tex: TextureHandle) {
     ui.horizontal(|ui| {
         ui.vertical(|ui| {
             ui.label("Zone 1");
-            ui.horizontal(|ui| {
+            ui.horizontal_wrapped(|ui| {
                 let mut picker_rect = ui.available_rect_before_wrap();
 
                 if ui.add(toggle(&mut cfg.kb.zones[0].enabled)).changed() {
@@ -282,29 +306,34 @@ fn show_static_kb_lighting_pane(ui: &mut egui::Ui, static_dev: &mut File, cfg: &
                 });
                 if !cfg.kb.zones[0].enabled {
                     let pos = [egui::pos2(picker_rect.max.x - 2.0, picker_rect.max.y - 7.0)];
-                    ui.put(egui::Rect::from_points(&pos), egui::Image::new(prohibit_tex.id(), egui::vec2(10.0, 10.0)));
+                    ui.put(egui::Rect::from_points(&pos), egui::Image::new(&prohibit_tex).max_size(egui::Vec2::new(10.0, 10.0)));
                 }
             });
             ui.add_space(10.0);
-            ui.horizontal(|ui| {
-                if ui.add(egui::DragValue::new(&mut cfg.kb.zones[0].color[0])).changed() {
-                    write_to_static_dev(static_dev, *cfg, 1);
-                    let _ = confy::store_path(config_path.clone(), &cfg);
-                }
-                if ui.add(egui::DragValue::new(&mut cfg.kb.zones[0].color[1])).changed() {
-                    write_to_static_dev(static_dev, *cfg, 1);
-                    let _ = confy::store_path(config_path.clone(), &cfg);
-                }
-                if ui.add(egui::DragValue::new(&mut cfg.kb.zones[0].color[2])).changed() {
-                    write_to_static_dev(static_dev, *cfg, 1);
-                    let _ = confy::store_path(config_path.clone(), &cfg);
-                }
-            });
+            ui.add_enabled_ui(cfg.kb.zones[0].enabled, |ui| {
+                ui.horizontal_centered(|ui| {
+                    let r = ui.label("R");
+                    if ui.add(egui::DragValue::new(&mut cfg.kb.zones[0].color[0])).labelled_by(r.id).changed() {
+                        write_to_static_dev(static_dev, *cfg, 1);
+                        let _ = confy::store_path(config_path.clone(), &cfg);
+                    }
+                    let g = ui.label("G");
+                    if ui.add(egui::DragValue::new(&mut cfg.kb.zones[0].color[1])).labelled_by(g.id).changed() {
+                        write_to_static_dev(static_dev, *cfg, 1);
+                        let _ = confy::store_path(config_path.clone(), &cfg);
+                    }
+                    let b = ui.label("B");
+                    if ui.add(egui::DragValue::new(&mut cfg.kb.zones[0].color[2])).labelled_by(b.id).changed() {
+                        write_to_static_dev(static_dev, *cfg, 1);
+                        let _ = confy::store_path(config_path.clone(), &cfg);
+                    }
+                });
+            })
         });
         ui.separator();
         ui.vertical(|ui| {
             ui.label("Zone 2");
-            ui.horizontal(|ui| {
+            ui.horizontal_wrapped(|ui| {
                 let mut picker_rect = ui.available_rect_before_wrap();
 
                 if ui.add(toggle(&mut cfg.kb.zones[1].enabled)).changed() {
@@ -321,29 +350,34 @@ fn show_static_kb_lighting_pane(ui: &mut egui::Ui, static_dev: &mut File, cfg: &
                 });
                 if !cfg.kb.zones[1].enabled {
                     let pos = [egui::pos2(picker_rect.max.x - 2.0, picker_rect.max.y - 7.0)];
-                    ui.put(egui::Rect::from_points(&pos), egui::Image::new(prohibit_tex.id(), egui::vec2(10.0, 10.0)));
+                    ui.put(egui::Rect::from_points(&pos), egui::Image::new(&prohibit_tex).max_size(egui::Vec2::new(10.0, 10.0)));
                 }
             });
             ui.add_space(10.0);
-            ui.horizontal(|ui| {
-                if ui.add(egui::DragValue::new(&mut cfg.kb.zones[1].color[0])).changed() {
-                    write_to_static_dev(static_dev, *cfg, 2);
-                    let _ = confy::store_path(config_path.clone(), &cfg);
-                }
-                if ui.add(egui::DragValue::new(&mut cfg.kb.zones[1].color[1])).changed() {
-                    write_to_static_dev(static_dev, *cfg, 2);
-                    let _ = confy::store_path(config_path.clone(), &cfg);
-                }
-                if ui.add(egui::DragValue::new(&mut cfg.kb.zones[1].color[2])).changed() {
-                    write_to_static_dev(static_dev, *cfg, 2);
-                    let _ = confy::store_path(config_path.clone(), &cfg);
-                }
+            ui.add_enabled_ui(cfg.kb.zones[1].enabled, |ui| {
+                ui.horizontal_centered(|ui| {
+                    let r = ui.label("R");
+                    if ui.add(egui::DragValue::new(&mut cfg.kb.zones[1].color[0])).labelled_by(r.id).changed() {
+                        write_to_static_dev(static_dev, *cfg, 2);
+                        let _ = confy::store_path(config_path.clone(), &cfg);
+                    }
+                    let g = ui.label("G");
+                    if ui.add(egui::DragValue::new(&mut cfg.kb.zones[1].color[1])).labelled_by(g.id).changed() {
+                        write_to_static_dev(static_dev, *cfg, 2);
+                        let _ = confy::store_path(config_path.clone(), &cfg);
+                    }
+                    let b = ui.label("B");
+                    if ui.add(egui::DragValue::new(&mut cfg.kb.zones[1].color[2])).labelled_by(b.id).changed() {
+                        write_to_static_dev(static_dev, *cfg, 2);
+                        let _ = confy::store_path(config_path.clone(), &cfg);
+                    }
+                });
             });
         });
         ui.separator();
         ui.vertical(|ui| {
             ui.label("Zone 3");
-            ui.horizontal(|ui| {
+            ui.horizontal_wrapped(|ui| {
                 let mut picker_rect = ui.available_rect_before_wrap();
 
                 if ui.add(toggle(&mut cfg.kb.zones[2].enabled)).changed() {
@@ -360,26 +394,64 @@ fn show_static_kb_lighting_pane(ui: &mut egui::Ui, static_dev: &mut File, cfg: &
                 });
                 if !cfg.kb.zones[2].enabled {
                     let pos = [egui::pos2(picker_rect.max.x - 2.0, picker_rect.max.y - 7.0)];
-                    ui.put(egui::Rect::from_points(&pos), egui::Image::new(prohibit_tex.id(), egui::vec2(10.0, 10.0)));
+                    ui.put(egui::Rect::from_points(&pos), egui::Image::new(&prohibit_tex).max_size(egui::Vec2::new(10.0, 10.0)));
                 }
             });
             ui.add_space(10.0);
-            ui.horizontal(|ui| {
-                if ui.add(egui::DragValue::new(&mut cfg.kb.zones[2].color[0])).changed() {
-                    write_to_static_dev(static_dev, *cfg, 3);
-                    let _ = confy::store_path(config_path.clone(), &cfg);
-                }
-                if ui.add(egui::DragValue::new(&mut cfg.kb.zones[2].color[1])).changed() {
-                    write_to_static_dev(static_dev, *cfg, 3);
-                    let _ = confy::store_path(config_path.clone(), &cfg);
-                }
-                if ui.add(egui::DragValue::new(&mut cfg.kb.zones[2].color[2])).changed() {
-                    write_to_static_dev(static_dev, *cfg, 3);
-                    let _ = confy::store_path(config_path.clone(), &cfg);
-                }
+            ui.add_enabled_ui(cfg.kb.zones[2].enabled, |ui| {
+                ui.horizontal_centered(|ui| {
+                    let r = ui.label("R");
+                    if ui.add(egui::DragValue::new(&mut cfg.kb.zones[2].color[0])).labelled_by(r.id).changed() {
+                        write_to_static_dev(static_dev, *cfg, 3);
+                        let _ = confy::store_path(config_path.clone(), &cfg);
+                    }
+                    let g = ui.label("G");
+                    if ui.add(egui::DragValue::new(&mut cfg.kb.zones[2].color[1])).labelled_by(g.id).changed() {
+                        write_to_static_dev(static_dev, *cfg, 3);
+                        let _ = confy::store_path(config_path.clone(), &cfg);
+                    }
+                    let b = ui.label("B");
+                    if ui.add(egui::DragValue::new(&mut cfg.kb.zones[2].color[2])).labelled_by(b.id).changed() {
+                        write_to_static_dev(static_dev, *cfg, 3);
+                        let _ = confy::store_path(config_path.clone(), &cfg);
+                    }
+                });
             });
         });
     });
+}
+
+fn check_devices(options: &eframe::NativeOptions) -> Result<(File, File), String> {
+    let static_dev = OpenOptions::new()
+        .write(true)
+        .create(false)
+        .open("/dev/acer-gkbbl-static-0");
+
+    let dynamic_dev = OpenOptions::new()
+        .write(true)
+        .create(false)
+        .open("/dev/acer-gkbbl-0");
+
+    if static_dev.is_err() || dynamic_dev.is_err() {
+        eprintln!("[ERROR]: Could not open device files");
+
+        let _ = eframe::run_simple_native("Predator-ng", options.clone(), move |ctx, _frame| {
+            egui::CentralPanel::default().show(ctx, |ui| {
+                ui.colored_label(egui::Color32::RED, egui::RichText::new("Error: could not open device files").heading());
+                ui.horizontal_wrapped(|ui| {
+                    ui.label("Please make sure you have the kernel module loaded, and that both");
+                    ui.label(egui::RichText::new("/dev/acer-gkbbl-0").code());
+                    ui.label("and");
+                    ui.label(egui::RichText::new("/dev/acer-gkbbl-static-0").code());
+                    ui.label("exist");
+                });
+            });
+        });
+
+        return Err("Could not open device files".to_string());
+    } else {
+        return Ok((static_dev.unwrap(), dynamic_dev.unwrap()));
+    }
 }
 
 fn initial_load(config_path: PathBuf, static_dev: &mut File, dynamic_dev: &mut File) -> Result<Config, confy::ConfyError> {
@@ -395,65 +467,59 @@ fn initial_load(config_path: PathBuf, static_dev: &mut File, dynamic_dev: &mut F
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut static_dev = OpenOptions::new()
-        .write(true)
-        .create(false)
-        .open("/dev/acer-gkbbl-static-0")
-        .expect("No static device found. Please make sure the kernel module is loaded first.");
-
-    let mut dynamic_dev = OpenOptions::new()
-        .write(true)
-        .create(false)
-        .open("/dev/acer-gkbbl-0")
-        .expect("No dynamic device found. Please make sure the kernel module is loaded first.");
-
-    let config_home = var("XDG_CONFIG_HOME")
-        .or_else(|_| var("HOME").map(|home|format!("{}/.config", home))).unwrap();
-
-    let config_path = Path::new(&config_home).join("predator-ng").to_path_buf();
-    let mut cfg = initial_load(config_path.clone(), &mut static_dev, &mut dynamic_dev)?;
-
     let options = eframe::NativeOptions {
         initial_window_size: Some(egui::vec2(640.0, 480.0)),
+        min_window_size: Some(egui::vec2(620.0, 400.0)),
         ..Default::default()
     };
 
-    let prohibit_svg_bytes = include_bytes!("../assets/prohibit.svg");
+    match check_devices(&options) {
+        Ok((mut static_dev, mut dynamic_dev)) => {
+            let config_home = var("XDG_CONFIG_HOME")
+                .or_else(|_| var("HOME").map(|home|format!("{}/.config", home))).unwrap();
 
-    let _ = eframe::run_simple_native("Predator-ng", options, move |ctx, _frame| {
-        let prohibit_svg = image::load_svg_bytes(prohibit_svg_bytes).expect("Failed to load prohibit icon");
-        let prohibit_tex = ctx.load_texture("prohibit", prohibit_svg, Default::default());
+            let config_path = Path::new(&config_home).join("predator-ng").to_path_buf();
+            let mut cfg = initial_load(config_path.clone(), &mut static_dev, &mut dynamic_dev)?;
 
-        egui::CentralPanel::default().show(ctx, |ui| {
-            ui.horizontal(|ui| {
-                ui.label("Keyboard Lighting Mode: ");
-                if ui.radio_value(&mut cfg.kb.mode, KBLightMode::Static, "Static").clicked() {
-                    switch_to_static(&mut static_dev, &mut dynamic_dev, cfg);
-                    let _ = confy::store_path(config_path.clone(), &cfg);
-                }
-                if ui.radio_value(&mut cfg.kb.mode, KBLightMode::Dynamic, "Dynamic").clicked() {
-                    update_dynamic(&mut dynamic_dev, cfg);
-                    let _ = confy::store_path(config_path.clone(), &cfg);
-                }
-                ui.label("Keyboard Brightness: ");
-                if ui.add(egui::Slider::new(&mut cfg.kb.brightness, 0..=100).show_value(false).step_by(25.0)).changed() {
-                    change_brightness(&mut dynamic_dev, cfg);
-                    let _ = confy::store_path(config_path.clone(), &cfg);
-                }
+            let prohibit_svg_bytes = include_bytes!("../assets/prohibit.svg");
+
+            let _ = eframe::run_simple_native("Predator-ng", options, move |ctx, _frame| {
+                let prohibit_svg = image::load_svg_bytes(prohibit_svg_bytes).expect("Failed to load prohibit icon");
+                let prohibit_tex = ctx.load_texture("prohibit", prohibit_svg, Default::default());
+
+                egui::CentralPanel::default().show(ctx, |ui| {
+                    ui.horizontal(|ui| {
+                        ui.label("Keyboard Lighting Mode: ");
+                        if ui.radio_value(&mut cfg.kb.mode, KBLightMode::Static, "Static").clicked() {
+                            switch_to_static(&mut static_dev, &mut dynamic_dev, cfg);
+                            let _ = confy::store_path(config_path.clone(), &cfg);
+                        }
+                        if ui.radio_value(&mut cfg.kb.mode, KBLightMode::Dynamic, "Dynamic").clicked() {
+                            update_dynamic(&mut dynamic_dev, cfg);
+                            let _ = confy::store_path(config_path.clone(), &cfg);
+                        }
+                        ui.label("Keyboard Brightness: ");
+                        if ui.add(egui::Slider::new(&mut cfg.kb.brightness, 0..=100).show_value(false).step_by(25.0)).changed() {
+                            change_brightness(&mut dynamic_dev, cfg);
+                            let _ = confy::store_path(config_path.clone(), &cfg);
+                        }
+                    });
+                    ui.add_space(15.0);
+                    ui.group(|ui| {
+                        match cfg.kb.mode {
+                            KBLightMode::Static => {
+                                show_static_kb_lighting_pane(ui, &mut static_dev, &mut cfg, config_path.clone(), prohibit_tex);
+                            },
+                            KBLightMode::Dynamic => {
+                                show_dynamic_kb_lighting_pane(ui, &mut dynamic_dev, &mut cfg, config_path.clone());
+                            }
+                        }
+                    });
+                });
             });
-            ui.add_space(15.0);
-            ui.group(|ui| {
-                match cfg.kb.mode {
-                    KBLightMode::Static => {
-                        show_static_kb_lighting_pane(ui, &mut static_dev, &mut cfg, config_path.clone(), prohibit_tex);
-                    },
-                    KBLightMode::Dynamic => {
-                        show_dynamic_kb_lighting_pane(ui, &mut dynamic_dev, &mut cfg, config_path.clone());
-                    }
-                }
-            });
-        });
-    });
 
-    Ok(())
+            Ok(())
+        }
+        Err(_) => Ok(())
+    }
 }
