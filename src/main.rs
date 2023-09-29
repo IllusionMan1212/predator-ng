@@ -311,7 +311,7 @@ fn show_static_kb_lighting_pane(ui: &mut egui::Ui, static_dev: &mut File, cfg: &
             });
             ui.add_space(10.0);
             ui.add_enabled_ui(cfg.kb.zones[0].enabled, |ui| {
-                ui.horizontal_centered(|ui| {
+                ui.horizontal(|ui| {
                     let r = ui.label("R");
                     if ui.add(egui::DragValue::new(&mut cfg.kb.zones[0].color[0])).labelled_by(r.id).changed() {
                         write_to_static_dev(static_dev, *cfg, 1);
@@ -355,7 +355,7 @@ fn show_static_kb_lighting_pane(ui: &mut egui::Ui, static_dev: &mut File, cfg: &
             });
             ui.add_space(10.0);
             ui.add_enabled_ui(cfg.kb.zones[1].enabled, |ui| {
-                ui.horizontal_centered(|ui| {
+                ui.horizontal(|ui| {
                     let r = ui.label("R");
                     if ui.add(egui::DragValue::new(&mut cfg.kb.zones[1].color[0])).labelled_by(r.id).changed() {
                         write_to_static_dev(static_dev, *cfg, 2);
@@ -399,7 +399,7 @@ fn show_static_kb_lighting_pane(ui: &mut egui::Ui, static_dev: &mut File, cfg: &
             });
             ui.add_space(10.0);
             ui.add_enabled_ui(cfg.kb.zones[2].enabled, |ui| {
-                ui.horizontal_centered(|ui| {
+                ui.horizontal(|ui| {
                     let r = ui.label("R");
                     if ui.add(egui::DragValue::new(&mut cfg.kb.zones[2].color[0])).labelled_by(r.id).changed() {
                         write_to_static_dev(static_dev, *cfg, 3);
